@@ -1,7 +1,9 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { Application } from 'express';
+import 'dotenv/config';
 
+const PORT = process.env.PORT || 3000;
 const options = {
     definition: {
         openapi: '3.0.0',
@@ -12,7 +14,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000/api/v1',
+                url: `http://localhost:${PORT}/api/v1`,
                 description: 'Development server',
             },
         ],
@@ -30,5 +32,5 @@ const swaggerSpec = swaggerJsdoc(options);
 export const setupSwagger = (app: Application) => {
     // This exposes the interactive UI at the /api-docs endpoint
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-    console.log('📄 Swagger Docs available at http://localhost:3000/api-docs');
+    console.log(`📄 Swagger Docs available at http://localhost:${PORT}/api/v1`);
 };
