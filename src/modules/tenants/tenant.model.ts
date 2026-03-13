@@ -50,7 +50,7 @@ const tenantSchema = new Schema<ITenent>({
 })
 
 //tenet_id
-tenantSchema.pre('save', async function (next) {
+tenantSchema.pre('validate', async function (next) {
     const doc = this;
 
     if (doc.isNew) {

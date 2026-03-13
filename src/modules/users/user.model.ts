@@ -9,7 +9,7 @@ export interface IUser extends Document {
     role: 'ADMIN' | 'TECHNICIAN' | 'CUSTOMER'
     email: string;
     password: string;
-    contact_no: number;
+    contact_no: string;
     address: string;
     createdAt: Date;
     updatedAt: Date;
@@ -60,7 +60,7 @@ const userSchema = new Schema<IUser>({
         default: 'CUSTOMER'
     },
     contact_no: {
-        type: Number,
+        type: String,
         required: true,
         unique: true
     },
@@ -73,7 +73,7 @@ const userSchema = new Schema<IUser>({
 )
 
 //user_id
-userSchema.pre('save', async function (next) {
+userSchema.pre('validate', async function (next) {
     const doc = this;
 
     if (doc.isNew) {
