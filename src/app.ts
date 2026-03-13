@@ -14,4 +14,7 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'UP', timestamp: new Date() });
 });
 
+//global error handler
+app.use(globalErrorHandler)
+
 export default app;
