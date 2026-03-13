@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { Counter } from "../../utlis/counter.modal";
+import { Counter } from "../../utils/counter.modal";
 
 export interface IUser extends Document {
     tenant?: mongoose.Types.ObjectId,
@@ -8,6 +8,7 @@ export interface IUser extends Document {
     user_name: string;
     role: 'ADMIN' | 'TECHNICIAN' | 'CUSTOMER'
     email: string;
+    password: string;
     contact_no: number;
     address: string;
     createdAt: Date;
@@ -46,6 +47,12 @@ const userSchema = new Schema<IUser>({
         unique: true,
         lowercase: true,
         trim: true
+    },
+    password: {
+        type: String,
+        required: true,
+        minlength: 8,
+        trim: true,
     },
     role: {
         type: String,

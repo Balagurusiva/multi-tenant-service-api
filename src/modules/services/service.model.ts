@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { Counter } from "../../utlis/counter.modal";
+import { Counter } from "../../utils/counter.modal";
 
 export interface IService extends Document {
     tenant?: mongoose.Types.ObjectId;
