@@ -90,4 +90,4 @@ userSchema.pre('validate', async function (next) {
     }
 })
 
-export const User = mongoose.model<IUser>("UserSchema", userSchema)
+export const User = mongoose.model<IUser>("User", userSchema)

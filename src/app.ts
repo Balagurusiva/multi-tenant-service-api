@@ -5,6 +5,7 @@ import { setupSwagger } from "./config/swagger";
 import { globalErrorHandler } from "./middlewares/error.middleware";
 import { generalLimiter, authLimiter } from "./middlewares/rateLimit.middleware";
 import { sanitizeMiddleware } from "./middlewares/sanitize.middleware";
+import { protect } from "./middlewares/auth.middlewares";
 
 import tenantRoutes from './modules/tenants/tenant.routes'
 import authRoutes from './modules/auth/auth.route'
@@ -20,6 +21,9 @@ setupSwagger(app);
 
 app.use('/api/v1', tenantRoutes)
 app.use('/api/v1', authRoutes)
+
+app.use(protect)
+
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'UP', timestamp: new Date() });

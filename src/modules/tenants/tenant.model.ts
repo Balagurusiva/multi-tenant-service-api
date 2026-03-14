@@ -69,4 +69,4 @@ tenantSchema.pre('validate', async function (next) {
     }
 })
 
-export const Tenant = mongoose.model<ITenent>("TenantSchema", tenantSchema)
+export const Tenant = mongoose.model<ITenent>("Tenant", tenantSchema)
