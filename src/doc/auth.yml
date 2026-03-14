@@ -1,0 +1,112 @@
+paths:
+  /login:
+    post:
+      summary: User login
+      description: Authenticate a user and return a JWT token and user profile
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User email
+                  example: "admin@example.com"
+                password:
+                  type: string
+                  minLength: 8
+                  description: User password
+                  example: "StrongPass123"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Login successfull"
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        description: JWT access token
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                      user:
+                        type: object
+                        properties:
+                          tenant_id:
+                            type: integer
+                            example: 101
+                          user_id:
+                            type: integer
+                            example: 201
+                          user_name:
+                            type: string
+                            example: "John Doe"
+                          user_role:
+                            type: string
+                            example: "ADMIN"
+                          user_email:
+                            type: string
+                            format: email
+                            example: "admin@example.com"
+                          user_contact:
+                            type: string
+                            example: "9876543210"
+                          user_address:
+                            type: string
+                            example: "123 Main St, City, State"
+        '400':
+          description: Bad request (validation failed)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Validation failed"
+        '401':
+          description: Unauthorized (invalid credentials)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Invalid Email or Password"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Internal server error"
