@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
+import { logger } from '../utils/logger';
 
 export const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   let statusCode = err.statusCode || 500;
@@ -27,6 +28,15 @@ export const globalErrorHandler = (err: any, req: Request, res: Response, next: 
     statusCode = 400;
     message = `Invalid ${err.path}: ${err.value}`;
   }
+
+  // Log error
+  logger.error({
+    statusCode,
+    message,
+    path: req.path,
+    method: req.method,
+    stack: err.stack
+  });
 
   // Send the unified response
   res.status(statusCode).json({
