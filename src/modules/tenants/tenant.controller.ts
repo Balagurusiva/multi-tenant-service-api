@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { TenantSerive } from "./tenant.service";
-import { catchAsync } from "../../utils/catchAsync";
-import { ApiResponse } from "../../utils/apiResponse";
+import { catchAsync } from "../../utils/CatchAsync";
+import { ApiResponse } from "../../utils/ApiResponse";
 
 export class Tenantcontroller{
     static registerTenant = catchAsync(async (req: Request, res: Response, next: NextFunction) => {

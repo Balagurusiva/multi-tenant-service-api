@@ -3,7 +3,7 @@ import { User } from "../users/user.model";
 import { Tenant } from "./tenant.model";
 import { RegisterTenamtInput } from "./tenant.schema";
 import { hashPassword } from "../../utils";
-import { AppError } from "../../utils/appError";
+import { AppError } from "../../utils/AppError";
 
 export class TenantSerive {
     static async createTanentAndAdmin(data : RegisterTenamtInput) {
