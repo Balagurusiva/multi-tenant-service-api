@@ -4,7 +4,7 @@ import { logger } from '../utils/logger';
 
 export const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   let statusCode = err.statusCode || 500;
-  let message = err.message || 'Internal Server Error';
+  let message = err.message || "Internal Server Error";
   let errors = null;
 
   // 1. Catch Zod Validation Errors
@@ -16,13 +16,13 @@ export const globalErrorHandler = (err: any, req: Request, res: Response, next: 
       field: e.path.join('.'),
       message: e.message
     }));
-  } 
+  }
   // 2. Catch MongoDB Duplicate Key Errors (e.g., Email or Slug already exists)
   else if (err.code === 11000) {
     statusCode = 409;
     const field = Object.keys(err.keyValue)[0];
-    message = `An account with that ${field} already exists.`;
-  } 
+    message = `A record with that ${field} already exists.`;
+  }
   // 3. Catch Mongoose Cast Errors (Invalid ObjectIds)
   else if (err.name === 'CastError') {
     statusCode = 400;
