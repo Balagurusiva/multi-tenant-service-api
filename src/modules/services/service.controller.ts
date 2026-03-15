@@ -14,7 +14,7 @@ export class ServiceController {
   static createService = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       let result = await ServiceService.createService(
-        req.user.tenant_id,
+        req.user!.tenant_id,
         req.body,
       );
       ApiResponse.send(res, 200, "Service Created Successfully", result);
@@ -23,7 +23,7 @@ export class ServiceController {
 
   static updateService = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      let result = await ServiceService.updateService({
+      let result = await ServiceService.updateService(req.user!.tenant_id, {
         params: req.params as { service_id: string },
         body: req.body,
       });
@@ -34,7 +34,7 @@ export class ServiceController {
 
   static deleteService = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      await ServiceService.deleteService({
+      await ServiceService.deleteService(req.user!.tenant_id, {
         params: req.params as { service_id: string },
       });
 
@@ -44,7 +44,7 @@ export class ServiceController {
 
   static getService = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      let result = await ServiceService.getService({
+      let result = await ServiceService.getService(req.user!.tenant_id, {
         params: req.params as { service_id: string },
       });
 

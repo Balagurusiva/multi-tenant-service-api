@@ -25,9 +25,9 @@ export class ServiceService {
 
     return this.formatService(service);
   }
-  static async updateService(data: UpdateServiceInput) {
+  static async updateService(tenant_id: number, data: UpdateServiceInput) {
     let updatedService = await Service.findOneAndUpdate(
-      { service_id: data.params.service_id },
+      { tenant_id, service_id: data.params.service_id },
       {
         $set: data.body,
       },
@@ -39,16 +39,20 @@ export class ServiceService {
     return this.formatService(updatedService);
   }
 
-  static async deleteService(data: DeleteGetServiceInput) {
+  static async deleteService(tenant_id: number, data: DeleteGetServiceInput) {
     let deletedService = await Service.findOneAndDelete({
+      tenant_id,
       service_id: data.params.service_id,
     });
 
     if (!deletedService) throw new AppError(404, "Service Not Found");
   }
 
-  static async getService(data: DeleteGetServiceInput) {
-    let service = await Service.findOne({ service_id: data.params.service_id });
+  static async getService(tenant_id: number, data: DeleteGetServiceInput) {
+    let service = await Service.findOne({
+      tenant_id,
+      service_id: data.params.service_id,
+    });
     if (!service) throw new AppError(404, "Service Not Found");
 
     return this.formatService(service);
@@ -56,12 +60,10 @@ export class ServiceService {
 
   static async getServicesList(tenant_id: number) {
     let serviceList = await Service.find(
-      {},
+      { tenant_id },
       "service_id service_name service_description cost est_duration_min is_active",
     ).lean();
 
-    if (serviceList.length == 0) throw new AppError(200, "No Services");
-
-    return serviceList;
+    return serviceList ?? [];
   }
 }

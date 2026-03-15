@@ -27,7 +27,6 @@ const serviceSchema = new Schema<IService>({
   service_name: {
     type: String,
     required: true,
-    unique: true,
   },
   service_description: {
     type: String,
