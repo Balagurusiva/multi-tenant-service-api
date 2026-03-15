@@ -6,7 +6,7 @@ import { ApiResponse } from "../../utils/ApiResponse";
 export class ServiceController {
   static getServiceList = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      let result = await ServiceService.getServicesList(req.user.tenant_id);
+      let result = await ServiceService.getServicesList(req.user!.tenant_id);
       ApiResponse.send(res, 200, "", result);
     },
   );
