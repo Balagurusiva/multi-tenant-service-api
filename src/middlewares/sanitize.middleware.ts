@@ -19,7 +19,7 @@ const sanitizeData = (data: any): any => {
   if (typeof data === 'object') {
     const sanitized: any = {};
     for (const key in data) {
-      if (data.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(data, key)) {
         // Block keys that start with $ (MongoDB operators)
         if (key.startsWith('$')) {
           continue;

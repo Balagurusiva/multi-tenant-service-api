@@ -5,12 +5,13 @@ import { ServiceController } from "./service.controller";
 import {
   createServiceSchema,
   DeleteGetServiceSchema,
+  GetServiceListSchema,
   UpdateServiceSchema,
 } from "./service.schema";
 
 const router = Router();
 
-router.get("/", ServiceController.getServiceList);
+router.get("/", validate(GetServiceListSchema), ServiceController.getServiceList);
 
 router.post(
   "/create_service",

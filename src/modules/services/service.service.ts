@@ -1,8 +1,10 @@
+import { Query } from "mongoose";
 import { AppError } from "../../utils/AppError";
 import { Service } from "./service.model";
 import {
   CreateServiceInput,
   DeleteGetServiceInput,
+  GetServiceListInput,
   UpdateServiceInput,
 } from "./service.schema";
 
@@ -58,12 +60,56 @@ export class ServiceService {
     return this.formatService(service);
   }
 
-  static async getServicesList(tenant_id: number) {
-    let serviceList = await Service.find(
-      { tenant_id },
-      "service_id service_name service_description cost est_duration_min is_active",
-    ).lean();
+  static async getServicesList(tenant_id: number, data: GetServiceListInput) {
+    const {
+      page = 1,
+      limit = 10,
+      search = '',
+      sortBy = 'service_id',
+      orderBy = 'asc',
+    } = data.query;
 
-    return serviceList ?? [];
+    const pageNumber = Math.max(1, page);
+    const pageSize = Math.max(1, limit);
+    const skip = (pageNumber - 1) * pageSize;
+
+    const query: any = { tenant_id }
+
+    if (search.trim()) {
+      query.$or = [
+        { service_name: { $regex: search, $options: "i" } },
+        { service_description: { $regex: search, $options: "i" } }
+      ]
+    }
+
+    const allowedSortFields = ["service_name", "service_description", "cost", "est_duration_min"]
+    const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "service_name"
+    const sortDirection = orderBy === "desc" || orderBy === "-1" ? -1 : 1;
+    const sortOptions: Record<string, 1 | -1> = { [safeSortBy]: sortDirection };
+
+    const [serviceList, totalCount] = await Promise.all([
+      Service.find(
+        query,
+        "service_id service_name service_description cost est_duration_min is_active"
+      )
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(pageSize)
+        .lean(),
+      Service.countDocuments(query),
+    ]);
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    return {
+      data: serviceList ?? [],
+      metadata: {
+        totalRecords: totalCount,
+        currentPage: pageNumber,
+        itemsPerPage: pageSize,
+        totalPages: totalPages,
+        hasNextPage: pageNumber < totalPages,
+        hasPrevPage: pageNumber > 1,
+      },
+    };
   }
 }
