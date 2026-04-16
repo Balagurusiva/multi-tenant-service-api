@@ -12,6 +12,7 @@ import { protect } from "./middlewares/auth.middlewares";
 
 import tenantRoutes from "./modules/tenants/tenant.routes";
 import authRoutes from "./modules/auth/auth.route";
+
 import serviceRoutes from "./modules/services/service.routes";
 
 const app: Application = express();
