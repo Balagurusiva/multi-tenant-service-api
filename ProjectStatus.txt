@@ -1,0 +1,20 @@
+18/4/2024
+Services module is the most complete feature right now.
+Technician/user creation has been started in src/modules/users/user.route.ts, src/modules/users/user.controller.ts, and src/modules/users/user.service.ts.
+
+19/04/2026
+As of now Technician routes are completed but need to fix the following issues
+
+Critical: PATCH /technician/:user_id can update the wrong accounts and even change roles. user.route.ts (line 27), user.schema.ts (line 17), and user.service.ts (line 100) together allow a technician to send any partial UserBaseSchema, including role, and the service applies it with Object.assign without checking that the target is actually a technician. In practice, a technician could promote themselves to ADMIN, or update another user in the same tenant if they know the user_id.
+
+High: GET /technician/:user_id lets any technician read any other technician in the same tenant. user.route.ts (line 21) and user.service.ts (line 74) use the requested user_id directly, but there is no self-only check for non-admin users. If technicians are only supposed to see their own profile, this is an authorization gap.
+
+High: the delete API is currently broken. user.service.ts (line 111) queries user_id_id instead of user_id, so the record will never match and deletes will return 404 even when the technician exists. The error text at user.service.ts (line 117) also says "Service Not Found" instead of "Technician not found".
+
+High: the “create technician” endpoint does not actually enforce technician creation. user.schema.ts (line 4), user.route.ts (line 15), and user.service.ts (line 93) accept client-supplied role and pass it straight into User.create. If this route is meant only for technicians, the server should set role: "TECHNICIAN" itself and remove role from the request body.
+
+Medium: tenant rules are inconsistent around uniqueness. user.service.ts (line 88) checks duplicate email inside the tenant, but user.model.ts (line 39) and user.model.ts (line 57) make email and contact_no globally unique. In a multi-tenant app, that mismatch usually leads to duplicate-key 500 errors and unclear business behavior.
+
+Medium: user_id params are validated too loosely. user.schema.ts (line 18) and user.schema.ts (line 25) accept any string, then the service casts with Number(user_id). Invalid values like "abc" become NaN and return 404 instead of a clean 400 validation error.
+
+Low: response shape is inconsistent across endpoints. user.service.ts (line 8) formats single-user responses as { name, role, ... }, while user.service.ts (line 62) returns raw list rows with user_name. The pagination key is also metaData, while your services module uses metadata. It works, but it makes frontend consumption harder.

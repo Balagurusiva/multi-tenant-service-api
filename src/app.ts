@@ -13,6 +13,7 @@ import { protect } from "./middlewares/auth.middlewares";
 import tenantRoutes from "./modules/tenants/tenant.routes";
 import authRoutes from "./modules/auth/auth.route";
 import serviceRoutes from "./modules/services/service.routes";
+import userRoutes from "./modules/users/user.route"
 
 const app: Application = express();
 
@@ -29,6 +30,7 @@ app.use("/api/v1", authRoutes);
 app.use(protect);
 
 app.use("/api/v1/services", serviceRoutes);
+app.use('/api/v1', userRoutes)
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "UP", timestamp: new Date() });

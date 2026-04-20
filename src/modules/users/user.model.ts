@@ -1,5 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { Counter } from "../../utils/counter.modal";
+import { hashPassword } from "../../utils";
+import { NextFunction } from "express";
 
 export interface IUser extends Document {
     tenant?: mongoose.Types.ObjectId,
@@ -16,13 +18,6 @@ export interface IUser extends Document {
 }
 
 const userSchema = new Schema<IUser>({
-    tenant: {
-        type: Schema.Types.ObjectId,
-        ref: 'Tenant',
-        required: function (this: IUser) {
-            return this.role === 'ADMIN' || this.role === 'TECHNICIAN';
-        }
-    },
     tenant_id: {
         type: Number,
         index: true,
@@ -89,5 +84,17 @@ userSchema.pre('validate', async function (next) {
         }
     }
 })
+
+userSchema.pre('save', async function () {
+    const doc = this;
+
+    if (!doc.isModified('password')) return;
+
+    try {
+        doc.password = await hashPassword(doc.password);
+    } catch (error: any) {
+        throw new Error("Faild to hash the password")
+    }
+});
 
 export const User = mongoose.model<IUser>("User", userSchema)
