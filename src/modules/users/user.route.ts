@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { restrictTo } from "../../middlewares/auth.middlewares";
 import { validate } from "../../middlewares/validate.middleware";
-import { createUserSchema, deleteTechnicianSchema, GetUserListSchema, updateTechnicianSchema } from "./user.schema";
+import { createTechnicianSchema, deleteTechnicianSchema, GetUserListSchema, updateTechnicianSchema } from "./user.schema";
 import { UserController } from "./user.controller";
 import { Role } from "../../types/global";
 
@@ -15,7 +15,7 @@ router.get('/users',
 
 router.post('/technician',
     restrictTo(Role.ADMIN),
-    validate(createUserSchema),
+    validate(createTechnicianSchema),
     UserController.createTechnician
 )
 

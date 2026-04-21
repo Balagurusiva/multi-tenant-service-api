@@ -98,8 +98,8 @@ export class UserSerive {
 
         if (existingTechnician)
             throw new AppError(409, "Technician already exists with provided email")
-
-        let newTechnician = await User.create({ tenant_id, ...data })
+        let technician = { ...data, role: Role.TECHNICIAN }
+        let newTechnician = await User.create({ tenant_id, ...technician })
 
         return this.formatUser(newTechnician)
 

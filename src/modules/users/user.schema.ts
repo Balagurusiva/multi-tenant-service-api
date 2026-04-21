@@ -11,8 +11,8 @@ const UserBaseSchema = z.object({
     address: z.string().min(20, "Address should contain atleast 20 character").max(100, "Address should not be more then 100 character"),
 })
 
-export const createUserSchema = z.object({
-    body: UserBaseSchema
+export const createTechnicianSchema = z.object({
+    body: UserBaseSchema.omit({ role: true }).strict()
 })
 
 export const updateTechnicianSchema = z.object({
@@ -49,7 +49,7 @@ export const GetUserListSchema = z.object({
 
 
 
-export type CreateTechnicianInput = z.infer<typeof UserBaseSchema>
+export type CreateTechnicianInput = z.infer<typeof createTechnicianSchema.shape.body>
 export type UpdateTechnicianInput = z.infer<typeof updateTechnicianSchema.shape.body>
 export type GetUserListInput = z.infer<typeof GetUserListSchema>
 export type GetTechnicianInput = z.infer<typeof deleteTechnicianSchema>
