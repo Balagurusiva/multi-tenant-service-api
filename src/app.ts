@@ -24,6 +24,10 @@ app.use(sanitizeMiddleware);
 app.use(generalLimiter);
 setupSwagger(app);
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "UP", timestamp: new Date() });
+});
+
 app.use("/api/v1", tenantRoutes);
 app.use("/api/v1", authRoutes);
 
@@ -31,10 +35,6 @@ app.use(protect);
 
 app.use("/api/v1/services", serviceRoutes);
 app.use('/api/v1', userRoutes)
-
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "UP", timestamp: new Date() });
-});
 
 //global error handler
 app.use(globalErrorHandler);

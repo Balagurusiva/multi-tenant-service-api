@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { Role } from '../../types/global'
+import { paginationQuerySchema } from '../../utils/common.schema'
 
 
 const UserBaseSchema = z.object({
@@ -29,11 +30,8 @@ export const deleteTechnicianSchema = z.object({
 })
 
 export const GetUserListSchema = z.object({
-    query: z.object({
+    query: paginationQuerySchema.extend({
         role: z.enum([Role.TECHNICIAN, "CUSTOMER"]),
-        page: z.coerce.number().int().min(1).optional().default(1),
-        limit: z.coerce.number().int().min(1).max(100).optional().default(10),
-        search: z.string().trim().optional().default(""),
         sortBy: z.enum([
             "user_id",
             "user_name",
@@ -41,9 +39,6 @@ export const GetUserListSchema = z.object({
         ])
             .optional()
             .default("user_id"),
-        orderBy: z.enum(["asc", "desc", "1", "-1"])
-            .optional()
-            .default("asc"),
     })
 })
 
