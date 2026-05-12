@@ -7,6 +7,7 @@ import {
   GetServiceListInput,
   UpdateServiceInput,
 } from "./service.schema";
+import { paginate } from "../../utils/Pagination";
 
 export class ServiceService {
   private static formatService(service: any) {
@@ -69,47 +70,25 @@ export class ServiceService {
       orderBy = 'asc',
     } = data.query;
 
-    const pageNumber = Math.max(1, page);
-    const pageSize = Math.max(1, limit);
-    const skip = (pageNumber - 1) * pageSize;
-
-    const query: any = { tenant_id }
-
+    const filter: Record<string, any> = { tenant_id };
     if (search.trim()) {
-      query.$or = [
+      filter.$or = [
         { service_name: { $regex: search, $options: "i" } },
         { service_description: { $regex: search, $options: "i" } }
       ]
     }
 
-    const allowedSortFields = ["service_name", "service_description", "cost", "est_duration_min"]
-    const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "service_name"
-    const sortDirection = orderBy === "desc" || orderBy === "-1" ? -1 : 1;
-    const sortOptions: Record<string, 1 | -1> = { [safeSortBy]: sortDirection };
-
-    const [serviceList, totalCount] = await Promise.all([
-      Service.find(
-        query,
-        "service_id service_name service_description cost est_duration_min is_active"
-      )
-        .sort(sortOptions)
-        .skip(skip)
-        .limit(pageSize)
-        .lean(),
-      Service.countDocuments(query),
-    ]);
-    const totalPages = Math.ceil(totalCount / pageSize);
-
-    return {
-      data: serviceList ?? [],
-      metadata: {
-        totalRecords: totalCount,
-        currentPage: pageNumber,
-        itemsPerPage: pageSize,
-        totalPages: totalPages,
-        hasNextPage: pageNumber < totalPages,
-        hasPrevPage: pageNumber > 1,
-      },
-    };
+    return await paginate({
+      model: Service,
+      filter,
+      select:"service_id service_name service_description cost est_duration_min is_active",
+      page,
+      limit,
+      sortBy,
+      orderBy,
+      allowedSortFeilds: ["service_name", "service_description", "cost", "est_duration_min"],
+      defaultSortBy: "service_name",
+      map: this.formatService
+    });
   }
 }

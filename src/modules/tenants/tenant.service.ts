@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 import { User } from "../users/user.model";
 import { Tenant } from "./tenant.model";
-import { RegisterTenamtInput } from "./tenant.schema";
+import { RegisterTenantInput } from "./tenant.schema";
 import { hashPassword } from "../../utils";
 import { AppError } from "../../utils/AppError";
 
-export class TenantSerive {
-    static async createTanentAndAdmin(data : RegisterTenamtInput) {
+export class TenantService {
+    static async createTenantAndAdmin(data : RegisterTenantInput) {
         const existingTenant = await Tenant.findOne({slug: data.orgSlug})
         if(existingTenant) 
             throw new AppError(409, "An Organization with thiss slug already exists.")

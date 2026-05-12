@@ -1,5 +1,6 @@
 //Zod schema for the tenant registration
 import { z } from "zod";
+import { paginationQuerySchema, paginationSchema } from "../../utils/common.schema";
 
 export const registerTenantSchema = z.object({
   body: z.object({
@@ -37,4 +38,13 @@ export const registerTenantSchema = z.object({
   }),
 });
 
-export type RegisterTenamtInput = z.infer<typeof registerTenantSchema>['body'];
+export const getTenantsListSchema = z.object({
+  query: paginationQuerySchema.extend({
+    sortBy: z
+      .enum(["OrgName", "orgSlug"])
+      .optional()
+      .default("OrgName"),
+  })
+});
+
+export type RegisterTenantInput = z.infer<typeof registerTenantSchema>['body'];
