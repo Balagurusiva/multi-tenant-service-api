@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { validate } from "../../middlewares/validate.middleware"
-import { getTenantsListSchema, registerTenantSchema } from "./tenant.schema"
+import { getTenantSchema, getTenantServicesSchema, getTenantsListSchema, registerTenantSchema } from "./tenant.schema"
 import { TenantController } from "./tenant.controller"
 
 const router = Router()
@@ -12,21 +12,21 @@ router.post(
 )
 
 router.get(
-    './tenants',
+    '/tenants',
     validate(getTenantsListSchema),
     TenantController.getTenantsList
 )
 
-// router.get(
-//     './tenants/:slug',
-//     validate(getTenantSchema),
-//     Tenantcontroller.getTenant
-// )
+router.get(
+    '/tenants/:slug',
+    validate(getTenantSchema),
+    TenantController.getTenant
+)
 
-// router.get(
-//     './tenant/:slug/services',
-//     validate(getTenantServicesSchema),
-//     Tenantcontroller.getTenantServices
-// )
+router.get(
+    '/tenants/:slug/service',
+    validate(getTenantServicesSchema),
+    TenantController.getTenantServices
+)
 
 export default router

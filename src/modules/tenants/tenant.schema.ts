@@ -41,10 +41,31 @@ export const registerTenantSchema = z.object({
 export const getTenantsListSchema = z.object({
   query: paginationQuerySchema.extend({
     sortBy: z
-      .enum(["OrgName", "orgSlug"])
+      .enum(["name", "slug"])
       .optional()
-      .default("OrgName"),
+      .default("name"),
+  })
+});
+
+export const getTenantSchema = z.object({
+  params: z.object({
+    slug: z.string()
+  })
+})
+
+export const getTenantServicesSchema = z.object({
+  params: z.object({
+    slug: z.string()
+  }),
+  query: paginationQuerySchema.extend({
+    sortBy: z
+      .enum(["service_id", "service_name", "cost", "est_duration_min", "is_active"])
+      .optional()
+      .default("service_id"),
   })
 });
 
 export type RegisterTenantInput = z.infer<typeof registerTenantSchema>['body'];
+export type GetTenantListInput = z.infer<typeof getTenantsListSchema>['query'];
+export type GetTenantInput = z.infer<typeof getTenantSchema>['params']
+export type GetTenantServicesInput = z.infer<typeof getTenantServicesSchema>

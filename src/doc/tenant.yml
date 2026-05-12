@@ -135,3 +135,345 @@ paths:
                   message:
                     type: string
                     example: "Internal server error"
+
+  /tenants:
+    get:
+      summary: Get tenant organizations
+      description: Retrieve a paginated list of tenants.
+      tags:
+        - Tenants
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: Page number starting from 1.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          required: false
+          description: Number of records to return per page.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+            example: 10
+        - name: search
+          in: query
+          required: false
+          description: Search tenants by name or slug.
+          schema:
+            type: string
+            example: "acme"
+        - name: sortBy
+          in: query
+          required: false
+          description: Field used to sort tenants.
+          schema:
+            type: string
+            enum:
+              - name
+              - slug
+            default: name
+            example: slug
+        - name: orderBy
+          in: query
+          required: false
+          description: Sort direction.
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+              - '1'
+              - '-1'
+            default: asc
+            example: asc
+      responses:
+        '200':
+          description: Tenant list returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "List Tenants Available"
+                  data:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            tenant_id:
+                              type: integer
+                              example: 1
+                            name:
+                              type: string
+                              example: "Acme Corporation"
+                            slug:
+                              type: string
+                              example: "acme-corp"
+                            email:
+                              type: string
+                              format: email
+                              example: "admin@acme-corp.com"
+                            status:
+                              type: string
+                              example: "ACTIVE"
+                      metaData:
+                        type: object
+                        properties:
+                          totalRecords:
+                            type: integer
+                            example: 12
+                          currentPage:
+                            type: integer
+                            example: 1
+                          itemsPerPage:
+                            type: integer
+                            example: 10
+                          totalPages:
+                            type: integer
+                            example: 2
+                          hasNextPage:
+                            type: boolean
+                            example: true
+                          hasPrevPage:
+                            type: boolean
+                            example: false
+        '400':
+          description: Validation failed for query parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Validation failed"
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
+
+  /tenants/{slug}:
+    get:
+      summary: Get tenant details
+      description: Retrieve tenant details by slug.
+      tags:
+        - Tenants
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: Tenant slug identifier.
+          schema:
+            type: string
+            example: "acme-corp"
+      responses:
+        '200':
+          description: Tenant details returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Tenant Details"
+                  data:
+                    type: object
+                    properties:
+                      tenant_id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "Acme Corporation"
+                      slug:
+                        type: string
+                        example: "acme-corp"
+                      email:
+                        type: string
+                        format: email
+                        example: "admin@acme-corp.com"
+                      status:
+                        type: string
+                        example: "ACTIVE"
+        '404':
+          description: Tenant not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Tenant not found"
+
+  /tenants/{slug}/service:
+    get:
+      summary: Get services for a tenant
+      description: Retrieve a paginated list of services available for the tenant identified by slug.
+      tags:
+        - Tenants
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: Tenant slug identifier.
+          schema:
+            type: string
+            example: "acme-corp"
+        - name: page
+          in: query
+          required: false
+          description: Page number starting from 1.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          required: false
+          description: Number of service records to return per page.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+            example: 10
+        - name: search
+          in: query
+          required: false
+          description: Search services by service name or description.
+          schema:
+            type: string
+            example: "cleaning"
+        - name: sortBy
+          in: query
+          required: false
+          description: Field used to sort service results.
+          schema:
+            type: string
+            enum:
+              - service_id
+              - service_name
+              - cost
+              - est_duration_min
+              - is_active
+            default: service_id
+            example: service_name
+        - name: orderBy
+          in: query
+          required: false
+          description: Sort direction.
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+              - '1'
+              - '-1'
+            default: asc
+            example: asc
+      responses:
+        '200':
+          description: Tenant services list returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Tenant Services List"
+                  data:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            service_id:
+                              type: string
+                              example: "T101_1"
+                            service_name:
+                              type: string
+                              example: "Premium House Cleaning"
+                            service_description:
+                              type: string
+                              example: "Complete 4-room deep cleaning"
+                            est_duration_min:
+                              type: integer
+                              example: 180
+                            cost:
+                              type: number
+                              example: 3500
+                            is_active:
+                              type: string
+                              example: "ACTIVE"
+                      metaData:
+                        type: object
+                        properties:
+                          totalRecords:
+                            type: integer
+                            example: 8
+                          currentPage:
+                            type: integer
+                            example: 1
+                          itemsPerPage:
+                            type: integer
+                            example: 10
+                          totalPages:
+                            type: integer
+                            example: 1
+                          hasNextPage:
+                            type: boolean
+                            example: false
+                          hasPrevPage:
+                            type: boolean
+                            example: false
+        '404':
+          description: Tenant not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Tenant not found"
