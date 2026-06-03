@@ -3,8 +3,7 @@ import { catchAsync } from "../utils/CatchAsync";
 import { AppError } from "../utils/AppError";
 import 'dotenv/config';
 import jwt, { JsonWebTokenError } from "jsonwebtoken"
-import { jwtPayload } from "../types/express";
-import { decode } from "node:punycode";
+import type { CurrUser } from "../types/global";
 
 export const protect = catchAsync((req: Request, res: Response, next: NewableFunction) => {
     let token
@@ -17,7 +16,7 @@ export const protect = catchAsync((req: Request, res: Response, next: NewableFun
 
     try {
         const secret = process.env.JWT_SECRET!
-        const decoded = jwt.verify(token, secret) as jwtPayload
+        const decoded = jwt.verify(token, secret) as CurrUser
 
         req.user = decoded
         next();
@@ -37,6 +36,10 @@ export const protect = catchAsync((req: Request, res: Response, next: NewableFun
 
 
 export const restrictTo = (...allowedRoles: string[]) => {
+
+    if (allowedRoles.length == 0) {
+        return (req: Request, res: Response, next: NextFunction) => next()
+    }
 
     return (req: Request, res: Response, next: NextFunction) => {
         if (!req.user) {
