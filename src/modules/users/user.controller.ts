@@ -17,7 +17,7 @@ export class UserController {
 
     static getTechnician = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
         const user_id = req.params.user_id as string
-        const result = await UserSerive.getTechnician(req.user, user_id)
+        const result = await UserSerive.getTechnician(req.user!, user_id)
 
         ApiResponse.send(res, 200, "Technician Details", result)
     })
@@ -32,7 +32,7 @@ export class UserController {
     static updateTechnician = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
         const user_id = req.params.user_id as string
         const result = await UserSerive.updateTechnician(
-            req.user,
+            req.user!,
             user_id,
             { ...req.body }
         )

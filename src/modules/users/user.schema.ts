@@ -1,16 +1,6 @@
 import { z } from 'zod'
 import { Role } from '../../types/global'
-import { paginationQuerySchema } from '../../utils/common.schema'
-
-
-const UserBaseSchema = z.object({
-    user_name: z.string().min(4, "User name should have atleast 4 character"),
-    role: z.enum(['ADMIN', 'TECHNICIAN', 'CUSTOMER']),
-    email: z.email("Please enter valid email"),
-    password: z.string().min(8, "Password must be at least 8 characters").max(50),
-    contact_no: z.string().min(10, "Please enter valid number"),
-    address: z.string().min(20, "Address should contain atleast 20 character").max(100, "Address should not be more then 100 character"),
-})
+import { paginationQuerySchema, UserBaseSchema } from '../../utils/common.schema'
 
 export const createTechnicianSchema = z.object({
     body: UserBaseSchema.omit({ role: true }).strict()

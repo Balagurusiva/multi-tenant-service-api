@@ -13,7 +13,8 @@ import { protect } from "./middlewares/auth.middlewares";
 import tenantRoutes from "./modules/tenants/tenant.routes";
 import authRoutes from "./modules/auth/auth.route";
 import serviceRoutes from "./modules/services/service.routes";
-import userRoutes from "./modules/users/user.route"
+import userRoutes from "./modules/users/user.route";
+import customerRoutes from './modules/customer/customer.routes';
 
 const app: Application = express();
 
@@ -30,6 +31,7 @@ app.get("/health", (req, res) => {
 
 app.use("/api/v1", tenantRoutes);
 app.use("/api/v1", authRoutes);
+app.use("/api/v1/customers", customerRoutes);
 
 app.use(protect);
 
